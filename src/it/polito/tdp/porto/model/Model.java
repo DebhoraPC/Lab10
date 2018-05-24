@@ -49,12 +49,24 @@ public class Model {
 		
 		// ARCHI: PRESENTE SE DUE AUTORI SONO CO-AUTORI
 		
+		// Versione 1
+		
+//		for (Author au : autori) {
+//			for (Paper p : au.getPubblicazioni()) {
+//				for (Author co : p.getAutori()) {
+//					if (! au.equals(co) && au.getId() < co.getId())
+//						grafo.addEdge(au,co); 
+//				}
+//			}
+//		}
+		
+		// Versione 2
+		
 		for (Author au : autori) {
-			for(Paper p : au.getPubblicazioni()) {
-				for(Author co : p.getAutori()) {
-					if(! au.equals(co) && au.getId() < co.getId())
-						grafo.addEdge(au,co); 
-				}
+			List<Author> coautori = dao.getCoAutori(au, autoremap); 
+			for (Author co : coautori) {
+				if (! au.equals(co))
+					grafo.addEdge(au, co);
 			}
 		}
 		

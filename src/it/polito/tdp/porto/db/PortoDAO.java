@@ -124,6 +124,35 @@ public class PortoDAO {
 
 	}
 	
+	public List<Author> getCoAutori(Author autore, AuthorIdMap autoremap) {
+		
+		String sql = "SELECT DISTINCT authorid, lastname, firstname FROM creator, author "
+					+ "WHERE id = authorid AND eprintid IN (SELECT eprintid FROM creator WHERE authorid = ?)";
+		
+		List<Author> result = new ArrayList<Author>();
+		
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, autore.getId());
+
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				Author coautore = new Author(rs.getInt("authorid"), rs.getString("lastname"), rs.getString("firstname"));
+				result.add(autoremap.get(coautore));
+			}
+			
+			conn.close();
+			return result;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Errore Db in getCoAutori");
+		}
+		
+	}
+	
 	/*
 	 * Dato l'id ottengo l'autore.
 	 */
